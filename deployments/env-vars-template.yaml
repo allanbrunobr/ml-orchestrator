@@ -1,0 +1,34 @@
+# Template de variáveis de ambiente para Cloud Run
+# 
+# INSTRUÇÕES:
+# 1. Copie este arquivo: cp env-vars-template.yaml env-vars.yaml
+# 2. Substitua REGION pelo região das functions (ex: us-central1, southamerica-east1)
+# 3. Substitua PROJECT_ID pelo ID do seu projeto GCP
+# 4. NÃO commite o arquivo env-vars.yaml com valores reais!
+#
+# Exemplo de URL real:
+# https://us-central1-meu-projeto.cloudfunctions.net/func-dev-cce-create-user-embeddings
+
+# URLs das funções ML - Embeddings e Vagas
+DEFAULT_CREATE_USER_EMBEDDINGS_URL: "https://REGION-PROJECT_ID.cloudfunctions.net/func-dev-cce-create-user-embeddings"
+DEFAULT_MATCH_CANDIDATO_URL: "https://REGION-PROJECT_ID.cloudfunctions.net/func-dev-cce-vcc-match-candidato"
+DEFAULT_MATCH_ANALYSIS_USER_VACANCY_URL: "https://REGION-PROJECT_ID.cloudfunctions.net/func-dev-cce-senai-match-analysis-user-vacancy"
+DEFAULT_GAP_ANALYSIS_USER_VACANCY_URL: "https://REGION-PROJECT_ID.cloudfunctions.net/func-dev-cce-senai-gap-analysis-user-vacancy"
+DEFAULT_SUGGEST_COURSE_VACANCY_URL: "https://REGION-PROJECT_ID.cloudfunctions.net/func-dev-cce-senai-suggest-course-vacancy"
+
+# URLs das funções ML - Profissões
+MATCH_USUARIO_PROFISSAO_URL: "https://REGION-PROJECT_ID.cloudfunctions.net/func-dev-cce-vcc-match-usuario-profissao"
+MATCH_USUARIO_CARREIRA_URL: "https://REGION-PROJECT_ID.cloudfunctions.net/func-dev-cce-vcc-match-carreira"
+MATCH_ANALYSIS_USER_PROFESSION_URL: "https://REGION-PROJECT_ID.cloudfunctions.net/func-dev-cce-senai-match-analysis-user-profession"
+GAP_ANALYSIS_USER_PROFESSION_URL: "https://REGION-PROJECT_ID.cloudfunctions.net/func-dev-cce-senai-gap-analysis-user-profession"
+SUGGEST_COURSE_PROFESSION_URL: "https://REGION-PROJECT_ID.cloudfunctions.net/func-dev-cce-senai-suggest-course-profession"
+
+# Webhook final (opcional)
+DEFAULT_WEBHOOK_URL: "https://your-webhook-url.com/webhook"
+
+# Configurações do servidor
+PORT: "8080"
+WORKERS: "4"
+TIMEOUT: "540"
+LOG_LEVEL: "INFO"
+LOG_FORMAT: "json"

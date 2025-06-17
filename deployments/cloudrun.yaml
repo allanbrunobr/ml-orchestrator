@@ -1,0 +1,74 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: ml-orchestrator
+  labels:
+    cloud.googleapis.com/location: us-central1
+  annotations:
+    run.googleapis.com/ingress: all  # Permite tráfego de qualquer origem
+spec:
+  template:
+    metadata:
+      annotations:
+        # Escala automática
+        autoscaling.knative.dev/minScale: "1"
+        autoscaling.knative.dev/maxScale: "100"
+        
+        # CPU e Memória
+        run.googleapis.com/cpu-throttling: "false"
+        
+    spec:
+      # Timeout de requisição (máximo 60 minutos)
+      timeoutSeconds: 540
+      
+      # Configuração do container
+      containerConcurrency: 100
+      
+      containers:
+      - image: gcr.io/PROJECT-ID/ml-orchestrator:latest
+        name: ml-orchestrator
+        
+        # Recursos
+        resources:
+          limits:
+            cpu: "2"
+            memory: "2Gi"
+          requests:
+            cpu: "1"
+            memory: "1Gi"
+        
+        # Portas
+        ports:
+        - containerPort: 8080
+          name: http1
+        
+        # Variáveis de ambiente (serão sobrescritas pelo deploy)
+        env:
+        - name: PORT
+          value: "8080"
+        - name: WORKERS
+          value: "4"
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: LOG_FORMAT
+          value: "json"
+        
+        # Health check
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
