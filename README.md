@@ -2,6 +2,100 @@
 
 Sistema de orquestração modular para funções de Machine Learning, projetado para executar em Google Cloud Run.
 
+## 🎯 Por Que Esta Solução Foi Criada
+
+### Problemas do Sistema Atual
+
+O sistema anterior possui uma função orquestradora em Python (`main.py` com 823 linhas) que gerencia múltiplos fluxos de ML com problemas significativos:
+
+#### 1. **Código Monolítico**
+- Arquivo único com 823 linhas misturando múltiplas responsabilidades
+- Difícil de manter, testar e debugar
+- Alto acoplamento entre componentes
+
+#### 2. **Duplicação Massiva**
+- 12+ funções quase idênticas para vagas e profissões
+- Copy/paste de lógica por todo o código
+- Alterações precisam ser replicadas em múltiplos lugares
+
+#### 3. **Gerenciamento de Paralelismo Problemático**
+```python
+# Código atual - ThreadPoolExecutor sem controle adequado
+with ThreadPoolExecutor(max_workers=2) as executor:
+    # Sem tratamento de erros adequado
+    # Sem agrupamento inteligente de tarefas
+```
+
+#### 4. **Complexidade de Flags**
+- Múltiplas flags booleanas confusas controlando o fluxo
+- Difícil entender qual combinação ativa qual comportamento
+- Propenso a erros de configuração
+
+#### 5. **Observabilidade Limitada**
+```python
+# Atual - prints simples sem estrutura
+print(f"Orchestration: Executing {step_name}...")
+```
+
+#### 6. **Tratamento de Erro Fragmentado**
+- Try/except espalhados sem padrão
+- Difícil rastrear falhas em produção
+- Sem contexto adequado nos erros
+
+### ✅ Como Esta Solução Resolve
+
+#### 1. **Arquitetura Modular**
+- Separação clara de responsabilidades
+- Cada módulo com ~100 linhas focado em uma tarefa
+- Fácil de entender, testar e manter
+
+#### 2. **Configuração Centralizada**
+- Todos os fluxos definidos em um único lugar
+- Adicionar novos fluxos sem modificar código
+- Reutilização inteligente de componentes
+
+#### 3. **Paralelismo Otimizado**
+- Agrupamento automático de tarefas paralelas
+- Tratamento robusto de erros
+- Performance melhorada
+
+#### 4. **Logs Estruturados**
+```python
+# Novo - logs JSON estruturados com contexto
+logger.info("step_execution", 
+    step_name=step_name, 
+    execution_id=id,
+    duration=time,
+    user_id=user_id
+)
+```
+
+#### 5. **Benefícios Técnicos**
+- **Testabilidade**: Cada componente pode ser testado isoladamente
+- **Escalabilidade**: Cloud Run escala melhor que Cloud Functions
+- **Manutenibilidade**: Código organizado e documentado
+- **Monitoramento**: Métricas detalhadas por step e execução
+
+### 📊 Comparação de Métricas
+
+| Aspecto | Sistema Anterior | Sistema Novo |
+|---------|------------------|--------------|
+| Linhas de código | ~800 (monolítico) | ~400 (modular) |
+| Arquivos | 1 | 12+ especializados |
+| Testabilidade | Baixa | Alta |
+| Duplicação | Alta | Mínima |
+| Observabilidade | Prints básicos | Logs estruturados |
+| Manutenção | Difícil | Fácil |
+| Escalabilidade | Limitada | Otimizada |
+
+### 🚀 Benefícios para o Negócio
+
+1. **Redução de Bugs** - Código mais limpo e testável
+2. **Desenvolvimento Mais Rápido** - Novos fluxos em minutos, não horas
+3. **Melhor Performance** - Paralelismo inteligente reduz latência
+4. **Economia de Custos** - Cloud Run pode ser mais barato que Cloud Functions
+5. **Maior Confiabilidade** - Tratamento de erros robusto e rastreabilidade completa
+
 ## Estrutura do Projeto
 
 ```
